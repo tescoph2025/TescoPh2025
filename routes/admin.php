@@ -8,7 +8,7 @@ use App\Http\Controllers\AdminWithdraw\AdminWithdrawController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Middleware\AdminRole;
-
+//test
 Route::middleware([AdminRole::class])->group(function () {
     Route::get('admin-dashboard', function () {
         return Inertia::render('admin/admin-dashboard');
