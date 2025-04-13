@@ -1,10 +1,12 @@
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ReceivingBank } from '@/pages/client/package';
 import { router } from '@inertiajs/react';
 import { FormEvent, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { ScrollArea } from '../../ui/scroll-area';
 
 interface PackageModalProps {
@@ -41,6 +43,9 @@ export function RequestFundPayment({ open, onOpen, receiving_bank }: PackageModa
     const exchangeRateToShow = exchangeRate ?? 0; // Fallback to 0 if exchangeRate is undefined
 
     const handleSubmit = (e: FormEvent, bank_id: number) => {
+        if (Number(requestamount) <= 0 || requestamount === undefined) {
+            return toast.error('Required amount');
+        }
         e.preventDefault();
 
         router.post('/postrequest-fund', {
@@ -48,6 +53,7 @@ export function RequestFundPayment({ open, onOpen, receiving_bank }: PackageModa
             amount: requestamount, // From useState
         });
         onOpen();
+        setrequestamount('');
     };
 
     function handleRequestAmount(event: React.ChangeEvent<HTMLInputElement>) {
@@ -82,6 +88,7 @@ export function RequestFundPayment({ open, onOpen, receiving_bank }: PackageModa
                                                         value={requestamount}
                                                         onChange={handleRequestAmount}
                                                     />
+                                                    <Label>Amount</Label>
                                                 </div>
                                                 <div className="rounded-md bg-red-100 p-4 text-black">
                                                     <div className="pb-3">

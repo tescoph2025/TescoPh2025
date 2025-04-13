@@ -51,7 +51,8 @@ class AdminRequestFundController extends Controller
                 'receiving_bank.account_number',
                 'users.name',
                 'users.email',
-                'request_fund.updated_at as approved_date'
+                'request_fund.updated_at as approved_date',
+                'request_fund.id'
             ])
             ->leftJoin('receiving_bank', 'receiving_bank.id', '=', 'request_fund.bank_id')
             ->leftJoin('users', 'users.id', '=', 'request_fund.user_id')

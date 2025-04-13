@@ -1,5 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { formatDate, formattedNumber } from '@/utils/utils';
+import { formattedNumber } from '@/utils/utils';
+import { formatDate } from '@/utils/utils copy';
+import { router } from '@inertiajs/react';
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -12,62 +14,79 @@ import {
     useReactTable,
     VisibilityState,
 } from '@tanstack/react-table';
-import { CircleCheck, Timer } from 'lucide-react';
 import React from 'react';
 import { Button } from '../../ui/button';
 import { Separator } from '../../ui/separator';
 
-export type REQUESTTYPE = {
-    status: string;
-    created_at: string;
+export type REQUESTFUNDPENDINGDATATYPE = {
+    id: number;
+    name: string;
+    email: string;
     amount: number;
-    bank_name: string;
-    account_number: number;
+    days_remaining: number;
+    deposit_date: string;
+    package_name: string;
+    status: string;
 };
 
-export const columns: ColumnDef<REQUESTTYPE>[] = [
+export const columns: ColumnDef<REQUESTFUNDPENDINGDATATYPE>[] = [
     {
-        accessorKey: 'created_at',
-        header: 'Request Date',
-        cell: ({ row }) => <div>{formatDate(row.getValue('created_at'))}</div>,
+        accessorKey: 'name',
+        header: 'Client Name',
+    },
+    {
+        accessorKey: 'email',
+        header: 'Email',
     },
     {
         accessorKey: 'bank_name',
-        header: 'Bank Name',
-    },
-    {
-        accessorKey: 'account_number',
-        header: 'Account No.',
+        header: 'Bank',
     },
     {
         accessorKey: 'amount',
         header: 'Amount',
         cell: ({ row }) => <div className="flex items-center text-green-600">{formattedNumber(Number(row.getValue('amount')))}</div>,
     },
+
     {
-        accessorKey: 'status',
-        header: 'Status',
-        cell: ({ row }) => (
-            <div>
-                {row.getValue('status') === 'pending' ? (
-                    <div className="flex items-center gap-x-2">
-                        <Timer size={27} className="text-blue-500" />
-                        <p className="font-extralight">Pending</p>
-                    </div>
-                ) : row.getValue('status') === 'approved' ? (
-                    <div className="flex items-center gap-x-2">
-                        <CircleCheck className="text-green-400" />
-                        <p className="font-extralight">Approved</p>
-                    </div>
-                ) : (
-                    ''
-                )}
-            </div>
-        ),
+        accessorKey: 'request_date',
+        header: 'Request Date',
+        cell: ({ row }) => <div>{formatDate(row.getValue('request_date'))}</div>,
+    },
+
+    {
+        id: 'actions',
+        header: 'Actions',
+        enableHiding: false,
+        cell: ({ row }) => {
+            const item = row.original;
+            const handleApprove = (e: any) => {
+                e.preventDefault();
+                router.post('/post-approve-requestfund', {
+                    id: item.id,
+                });
+            };
+            const handleDeny = (e: any) => {
+                e.preventDefault();
+                router.post('/post-deny-deposit', {
+                    id: item.id,
+                });
+            };
+            return (
+                <div className="flex gap-x-2">
+                    <Button onClick={handleApprove} size={'sm'} variant={'default'}>
+                        Approve
+                    </Button>
+                    <Button onClick={handleDeny} size={'sm'} variant={'destructive'}>
+                        Deny
+                    </Button>
+                </div>
+            );
+        },
     },
 ];
 
-const RequestTable = ({ data }: { data: REQUESTTYPE[] }) => {
+const RequestFundPendingTable = ({ data }: { data: REQUESTFUNDPENDINGDATATYPE[] }) => {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -143,4 +162,4 @@ const RequestTable = ({ data }: { data: REQUESTTYPE[] }) => {
     );
 };
 
-export default RequestTable;
+export default RequestFundPendingTable;

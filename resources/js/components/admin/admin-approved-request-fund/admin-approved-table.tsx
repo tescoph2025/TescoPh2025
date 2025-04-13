@@ -12,62 +12,46 @@ import {
     useReactTable,
     VisibilityState,
 } from '@tanstack/react-table';
-import { CircleCheck, Timer } from 'lucide-react';
 import React from 'react';
 import { Button } from '../../ui/button';
 import { Separator } from '../../ui/separator';
 
-export type REQUESTTYPE = {
-    status: string;
-    created_at: string;
+export type PENDINGDATATYPE = {
+    id: number;
     amount: number;
-    bank_name: string;
-    account_number: number;
+    days_remaining: number;
+    deposit_date: string;
+    package_name: string;
+    status: string;
 };
 
-export const columns: ColumnDef<REQUESTTYPE>[] = [
+export const columns: ColumnDef<PENDINGDATATYPE>[] = [
     {
-        accessorKey: 'created_at',
-        header: 'Request Date',
-        cell: ({ row }) => <div>{formatDate(row.getValue('created_at'))}</div>,
+        accessorKey: 'name',
+        header: 'Client Name',
+    },
+    {
+        accessorKey: 'email',
+        header: 'Email',
     },
     {
         accessorKey: 'bank_name',
-        header: 'Bank Name',
-    },
-    {
-        accessorKey: 'account_number',
-        header: 'Account No.',
+        header: 'Bank',
     },
     {
         accessorKey: 'amount',
         header: 'Amount',
         cell: ({ row }) => <div className="flex items-center text-green-600">{formattedNumber(Number(row.getValue('amount')))}</div>,
     },
+
     {
-        accessorKey: 'status',
-        header: 'Status',
-        cell: ({ row }) => (
-            <div>
-                {row.getValue('status') === 'pending' ? (
-                    <div className="flex items-center gap-x-2">
-                        <Timer size={27} className="text-blue-500" />
-                        <p className="font-extralight">Pending</p>
-                    </div>
-                ) : row.getValue('status') === 'approved' ? (
-                    <div className="flex items-center gap-x-2">
-                        <CircleCheck className="text-green-400" />
-                        <p className="font-extralight">Approved</p>
-                    </div>
-                ) : (
-                    ''
-                )}
-            </div>
-        ),
+        accessorKey: 'request_date',
+        header: 'Request Date',
+        cell: ({ row }) => <div>{formatDate(row.getValue('request_date'))}</div>,
     },
 ];
 
-const RequestTable = ({ data }: { data: REQUESTTYPE[] }) => {
+const ApprovedTable = ({ data }: { data: PENDINGDATATYPE[] }) => {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -143,4 +127,4 @@ const RequestTable = ({ data }: { data: REQUESTTYPE[] }) => {
     );
 };
 
-export default RequestTable;
+export default ApprovedTable;
