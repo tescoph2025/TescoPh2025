@@ -65,7 +65,7 @@ export function RequestFundPayment({ open, onOpen, receiving_bank }: PackageModa
         <Dialog open={open} onOpenChange={onOpen}>
             <DialogContent className="h-11/12 sm:max-w-[600px]">
                 <DialogHeader>
-                    <DialogTitle className="text-center">Requst Fund</DialogTitle>
+                    <DialogTitle className="text-center">Request Fund</DialogTitle>
                 </DialogHeader>
                 <ScrollArea className="overflow-auto rounded-md border">
                     <div className="mx-auto flex flex-1 flex-col gap-4 rounded-xl p-4">
