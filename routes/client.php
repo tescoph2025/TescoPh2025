@@ -7,6 +7,7 @@ use App\Http\Controllers\DepositHistory\DepositHistoryController;
 use App\Http\Controllers\FranchiseApplication\FranchiseController;
 use App\Http\Controllers\Income\IncomeController;
 use App\Http\Controllers\Referral\ReferralController;
+use App\Http\Controllers\RequestFund\RequestFundController;
 use App\Http\Controllers\Transferfund\TransferfundController;
 use App\Http\Controllers\Withdraw\WithdrawController;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,7 @@ Route::get('deposit', [DepositController::class, 'index'])->name('package.index'
 Route::post('postpackage', [DepositController::class, 'postDeposit']);
 
 Route::get('income-history', [IncomeController::class, 'index']);
+Route::get('income-history/referal-incentives', [IncomeController::class, 'index'])->name('income-history-referal-incentives');
 Route::get('deposit-history', [DepositHistoryController::class, 'index'])->name('deposit-history');
 
 //withdraw module
@@ -28,8 +30,11 @@ Route::get('withdraw-history', [WithdrawController::class, 'indexHistory'])->nam
 
 //transfer fund module
 Route::get('transfer-fund', [TransferfundController::class, 'index']);
-Route::get('request-fund', [IncomeController::class, 'index']);
 Route::post('posttransfer-fund', [TransferfundController::class, 'postTransferfund']);
+
+//request fund module
+Route::get('request-fund', [RequestFundController::class, 'index']);
+Route::post('postrequest-fund', [RequestFundController::class, 'postRequestfund']);
 
 
 Route::get('/referrals/{userId}', [ReferralController::class, 'getReferralLevels'])->name('referrals.levels');

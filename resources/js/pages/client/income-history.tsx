@@ -21,7 +21,6 @@ export default function AdminTransferFunds() {
         auth: Auth;
     }>().props;
 
-    console.log(data, referral_bonus);
     function totalAmount(array: any[]): number {
         return array.reduce((a, b) => Number(a) + Number(b.daily_shares_value), 0);
     }
@@ -33,7 +32,7 @@ export default function AdminTransferFunds() {
         <AppLayout breadcrumbs={breadcrumbs} role={auth.user.role as RoleProps}>
             <Head title="Income History" />
             <div className="mx-auto">
-                <TabsClear defaultValue="send" className="mt-6 px-4">
+                <TabsClear defaultValue={window.location.pathname.includes('/referal-incentives') ? 'received' : 'send'} className="mt-6 px-4">
                     <TabsListClear className="grid grid-cols-2">
                         <TabsTriggerClear value="send">Interest Income</TabsTriggerClear>
                         <TabsTriggerClear value="received">Referrals Income</TabsTriggerClear>

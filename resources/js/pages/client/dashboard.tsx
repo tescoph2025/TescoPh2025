@@ -152,9 +152,9 @@ export default function Dashboard() {
                         <CardContent>
                             <div className="flex justify-between">
                                 {/* Name: {referral_bonus?.ref_user_username} */}
-                                {/* <LinkURL className="hover:underline" href={route('income-history')}>
+                                <LinkURL className="hover:underline" href={route('income-history-referal-incentives')}>
                                     View All
-                                </LinkURL> */}
+                                </LinkURL>
                                 <p className="text-md font-semi">
                                     {referral_bonus?.bonus_amount ? formattedNumber(referral_bonus?.bonus_amount) : 0}
                                 </p>
