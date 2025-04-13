@@ -1,5 +1,5 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { formatDate } from '@/utils/utils';
+import { formatDate, formattedNumber } from '@/utils/utils';
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -37,6 +37,7 @@ export const columns: ColumnDef<PENDINGDATATYPE>[] = [
     {
         accessorKey: 'amount',
         header: 'Amount',
+        cell: ({ row }) => <div className="flex items-center text-green-600">{formattedNumber(Number(row.getValue('amount')))}</div>,
     },
     {
         accessorKey: 'payment_method',

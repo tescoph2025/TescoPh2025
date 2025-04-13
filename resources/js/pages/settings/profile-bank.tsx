@@ -3,6 +3,7 @@ import { Transition } from '@headlessui/react';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
+import HeadingSmall from '@/components/heading-small';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -43,9 +44,10 @@ export default function ProfileBank() {
     };
     return (
         <AppLayout breadcrumbs={breadcrumbs} role={auth.user.role as RoleProps}>
-            <Head title="Profile image" />
+            <Head title="Bank Details" />
 
             <SettingsLayout>
+                <HeadingSmall title="Bank Details" description="Update your bank account details." />
                 <form onSubmit={submit} className="space-y-6">
                     <div className="grid gap-2">
                         <Label htmlFor="name">Bank Name</Label>

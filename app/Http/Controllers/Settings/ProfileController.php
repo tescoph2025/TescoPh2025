@@ -85,9 +85,11 @@ class ProfileController extends Controller
     }
     public function updateProfileImage(Request $request)
     {
-        $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
+        Log::info($request);
+        // $request->validate([
+        //     'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        // ]);
+        Log::info('dsfsdf');
 
         $user = Auth::user();
         if ($request->hasFile('image')) {

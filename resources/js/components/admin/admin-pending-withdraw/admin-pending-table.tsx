@@ -1,4 +1,5 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { formattedNumber } from '@/utils/utils';
 import { router } from '@inertiajs/react';
 import {
     ColumnDef,
@@ -32,6 +33,7 @@ export const columns: ColumnDef<PENDINGDATATYPE>[] = [
     {
         accessorKey: 'amount',
         header: 'Amount Requested',
+        cell: ({ row }) => <div className="flex items-center text-green-600">{formattedNumber(Number(row.getValue('amount')))}</div>,
     },
 
     {

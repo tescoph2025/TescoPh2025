@@ -22,8 +22,9 @@ interface PageProps {
 }
 
 export default function Dashboard() {
-    const { APP_DOMAIN, auth, testpass, account_balance, active_deposit, total_interest, total_withdraw, recentHistory } = usePage<PageProps>().props;
-    console.log(recentHistory);
+    const { APP_DOMAIN, auth, account_balance, active_deposit, total_interest, total_withdraw, recentHistory, referral_bonus } =
+        usePage<PageProps>().props;
+    console.log(referral_bonus);
     const refValue = useRef<HTMLInputElement>(null);
 
     const handleCopy = () => {
@@ -144,6 +145,25 @@ export default function Dashboard() {
                     <Card className="w-full">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0">
                             <CardTitle className="flex text-sm font-bold">
+                                <CreditCard className="mr-2" />
+                                Recent Referal Incentives
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex justify-between">
+                                <LinkURL className="hover:underline" href={route('withdraw-history')}>
+                                    View All
+                                </LinkURL>
+
+                                <p className="text-md font-semi">
+                                    {referral_bonus?.bonus_amount ? formattedNumber(referral_bonus?.bonus_amount) : 0}
+                                </p>
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card className="w-full">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                            <CardTitle className="flex text-sm font-bold">
                                 <CircleDollarSign className="mr-2" />
                                 Recent Deposit
                             </CardTitle>
@@ -173,7 +193,6 @@ export default function Dashboard() {
                                 </LinkURL>
 
                                 <p className="text-md font-semi">
-                                    ${' '}
                                     {recentHistory?.recentWithdraw?.withdrawal_amount
                                         ? formattedNumber(recentHistory?.recentWithdraw?.withdrawal_amount)
                                         : 0}
@@ -182,6 +201,7 @@ export default function Dashboard() {
                         </CardContent>
                     </Card>
                 </div>
+
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0">
                         <CardTitle className="flex text-sm font-bold">Your Network</CardTitle>
