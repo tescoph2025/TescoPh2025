@@ -3,6 +3,7 @@
 use App\Http\Controllers\ActivationFund\ActivationfundController;
 use App\Http\Controllers\AdminDeposits\AdminDepositController;
 use App\Http\Controllers\AdminManageUsers\AdminManageUsersController;
+use App\Http\Controllers\AdminRequestFund\AdminRequestFundController;
 use App\Http\Controllers\AdminTransferFunds\AdminTransferFundsController;
 use App\Http\Controllers\AdminWithdraw\AdminWithdrawController;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +28,11 @@ Route::middleware([AdminRole::class])->group(function () {
     Route::get('admin-approved-withdraw', [AdminWithdrawController::class, 'approvedWithdraw'])->name('admin-approved-withdraw');
     Route::post('post-approve-withdraw', [AdminWithdrawController::class, 'approveWithdraw']);
     Route::post('post-deny-withdraw', [AdminWithdrawController::class, 'denyWithdraw']);
+
+    Route::get('admin-pending-requestfund', [AdminRequestFundController::class, 'pendingReqFund'])->name('admin-pending-requestfund');
+    Route::get('admin-approved-requestfund', [AdminRequestFundController::class, 'approvedReqFund'])->name('admin-approved-requestfund');
+    Route::post('post-approve-requestfund', [AdminRequestFundController::class, 'approveReqFund']);
+    Route::post('post-deny-requestfund', [AdminRequestFundController::class, 'denyReqFund']);
 
     Route::get('admin-manage-users', [AdminManageUsersController::class, 'allUsers'])->name('admin-manage-users');
     // Route::get('admin-dashboard', [AdminManageUsersController::class, 'allUsers'])->name('admin-dashboard');
