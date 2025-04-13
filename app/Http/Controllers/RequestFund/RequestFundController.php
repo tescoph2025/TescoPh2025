@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\RequestFund;
 
 use App\Http\Controllers\Controller;
+use App\Models\ReceivingBank;
 use App\Models\RequestFund;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,11 +23,12 @@ class RequestFundController extends Controller
             ->orderByDesc('rf.created_at')
             ->get();
 
-
         return Inertia::render('client/request-fund', [
-            'data' => $data,
+            'data' =>  $data,
             'success' => session('success'),
             'error' => session('error'),
+            'receiving_bank' => ReceivingBank::all(),
+
         ]);
     }
 
@@ -47,5 +49,12 @@ class RequestFundController extends Controller
         } else {
             return redirect()->back()->with('error', ['message' => 'Fund request failed', $time]);
         }
+    }
+
+    public function banks()
+    {
+        return Inertia::render('client/request-fund', [
+            'receiving_bank' => ReceivingBank::all(),
+        ]);
     }
 }

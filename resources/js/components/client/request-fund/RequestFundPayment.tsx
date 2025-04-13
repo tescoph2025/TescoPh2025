@@ -1,9 +1,10 @@
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ReceivingBank } from '@/pages/client/package';
-import { formattedNumberPH } from '@/utils/utils';
-import { useEffect, useState } from 'react';
+import { router } from '@inertiajs/react';
+import { FormEvent, useEffect, useState } from 'react';
 import { ScrollArea } from '../../ui/scroll-area';
 
 interface PackageModalProps {
@@ -16,6 +17,7 @@ export function RequestFundPayment({ open, onOpen, receiving_bank }: PackageModa
     const [exchangeRate, setExchangeRate] = useState<number>();
     const [exchangeUpdate, setExchangeUpdate] = useState(null);
     const [error, setError] = useState(null);
+    const [requestamount, setrequestamount] = useState<string>();
     useEffect(() => {
         const fetchExchangeRate = async () => {
             try {
@@ -38,39 +40,33 @@ export function RequestFundPayment({ open, onOpen, receiving_bank }: PackageModa
 
     const exchangeRateToShow = exchangeRate ?? 0; // Fallback to 0 if exchangeRate is undefined
 
-    // const handleSubmit = (e: FormEvent, bank_id: number) => {
-    //     e.preventDefault();
+    const handleSubmit = (e: FormEvent, bank_id: number) => {
+        e.preventDefault();
 
-    //     router.post('/postpackage', {
-    //         package_id: finalValues?.pck.id, // Passed as a prop
-    //         bank_id: bank_id, // From useState
-    //         payment_method: finalValues?.paymentMode, // From useState
-    //         amount: finalValues?.amount, // From useState
-    //     });
-    //     onOpen();
-    // };
+        router.post('/postrequest-fund', {
+            bank_id: bank_id, // From useState
+            amount: requestamount, // From useState
+        });
+        onOpen();
+    };
+
+    function handleRequestAmount(event: React.ChangeEvent<HTMLInputElement>) {
+        setrequestamount(event.target.value);
+        console.log({ requestamount }); // Update the state with the new value
+    }
 
     return (
         <Dialog open={open} onOpenChange={onOpen}>
             <DialogContent className="h-11/12 sm:max-w-[600px]">
                 <DialogHeader>
-                    <DialogTitle className="text-center">Online Payment</DialogTitle>
+                    <DialogTitle className="text-center">Requst Fund</DialogTitle>
                 </DialogHeader>
                 <ScrollArea className="overflow-auto rounded-md border">
                     <div className="mx-auto flex flex-1 flex-col gap-4 rounded-xl p-4">
                         <div className="">
-                            <div className="rounded-md bg-blue-700 p-4 text-center text-white">
-                                <p className="py-5 font-bold">Pending Payment</p>
-                                {/* <p className="text-lg font-bold">{formattedNumber(finalValues?.amount)}</p> */}
-                                <p className="text-lg font-bold">100</p>
-                                <p className="text-secondary italic">1 USD = {formattedNumberPH(exchangeRateToShow)} </p>
-                                <p className="text-secondary italic">Last Update {exchangeUpdate}</p>
-                                {/* <p className="py-5 text-2xl font-extrabold">{formattedNumberPH(exchangeRateToShow * Number(finalValues?.amount))}</p> */}
-                                <p className="py-5 text-2xl font-extrabold">{formattedNumberPH(100)}</p>
-                            </div>
                             {receiving_bank ? (
                                 <>
-                                    <Tabs defaultValue="bpi" className="mt-6 w-full">
+                                    <Tabs defaultValue="bpi" className="w-full">
                                         <TabsList className="grid w-full grid-cols-2">
                                             {receiving_bank.map((item) => (
                                                 <TabsTrigger value={String(item.id)} key={item.id}>
@@ -80,6 +76,13 @@ export function RequestFundPayment({ open, onOpen, receiving_bank }: PackageModa
                                         </TabsList>
                                         {receiving_bank.map((item) => (
                                             <TabsContent value={String(item.id)} key={item.id}>
+                                                <div className="rounded-md py-5 text-center">
+                                                    <Input
+                                                        placeholder="Enter your desire amount"
+                                                        value={requestamount}
+                                                        onChange={handleRequestAmount}
+                                                    />
+                                                </div>
                                                 <div className="rounded-md bg-red-100 p-4 text-black">
                                                     <div className="pb-3">
                                                         <span className="text-accent-foreground text-xs">Receiving Bank: </span>
@@ -128,10 +131,10 @@ export function RequestFundPayment({ open, onOpen, receiving_bank }: PackageModa
                                                         <p>Scan this QR-code using your preferred mobile banking app.</p>
                                                     </div>
                                                     <div className="mt-8 text-center text-sm">
-                                                        {/* <Button onClick={(e) => handleSubmit(e, item.id)} className="w-24 bg-red-500">
-                                                            OK
-                                                        </Button> */}
-                                                        <Button className="w-24 bg-red-500">OK</Button>
+                                                        <Button onClick={(e) => handleSubmit(e, item.id)} className="w-24 bg-red-500">
+                                                            Request
+                                                        </Button>
+                                                        {/* <Button className="w-24 bg-red-500">Request</Button> */}
                                                     </div>
                                                 </div>
                                             </TabsContent>

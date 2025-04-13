@@ -46,6 +46,14 @@ class DepositController extends Controller
 
         ]);
     }
+
+    public function banks()
+    {
+        return Inertia::render('client/request-fund', [
+            'receiving_bank' => ReceivingBank::all(),
+        ]);
+    }
+
     public function postDeposit(Request $request)
     {
         $user = $request->user();
