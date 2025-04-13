@@ -5,7 +5,7 @@ import AppLayout from '@/layouts/app-layout';
 import { Auth, RoleProps, type BreadcrumbItem } from '@/types';
 import { formattedNumber } from '@/utils/utils';
 import { Head, Link as LinkURL, usePage } from '@inertiajs/react';
-import { CircleDollarSign, CreditCard } from 'lucide-react';
+import { CircleDollarSign, CreditCard, SmilePlus } from 'lucide-react';
 import { useRef } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -145,16 +145,16 @@ export default function Dashboard() {
                     <Card className="w-full">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0">
                             <CardTitle className="flex text-sm font-bold">
-                                <CreditCard className="mr-2" />
+                                <SmilePlus className="mr-2" />
                                 Recent Referal Incentives
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="flex justify-between">
-                                <LinkURL className="hover:underline" href={route('withdraw-history')}>
+                                {/* Name: {referral_bonus?.ref_user_username} */}
+                                {/* <LinkURL className="hover:underline" href={route('income-history')}>
                                     View All
-                                </LinkURL>
-
+                                </LinkURL> */}
                                 <p className="text-md font-semi">
                                     {referral_bonus?.bonus_amount ? formattedNumber(referral_bonus?.bonus_amount) : 0}
                                 </p>

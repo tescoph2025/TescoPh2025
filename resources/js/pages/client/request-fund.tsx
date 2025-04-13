@@ -1,5 +1,6 @@
 import InterestTab, { INTERESTTYPE } from '@/components/client/income-history/interest';
 import { REFERRALBUNOSTYPE } from '@/components/client/income-history/referral-tab';
+import { RequestFundPayment } from '@/components/client/request-fund/PaymentOnline';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
