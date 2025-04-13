@@ -23,11 +23,12 @@ class RequestFundController extends Controller
             ->orderByDesc('rf.created_at')
             ->get();
 
-
         return Inertia::render('client/request-fund', [
-            'data' => [],
+            'data' =>  $data,
             'success' => session('success'),
             'error' => session('error'),
+            'receiving_bank' => ReceivingBank::all(),
+
         ]);
     }
 

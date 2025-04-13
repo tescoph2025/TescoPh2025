@@ -3,7 +3,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ReceivingBank } from '@/pages/client/package';
-import { useEffect, useState } from 'react';
+import { router } from '@inertiajs/react';
+import { FormEvent, useEffect, useState } from 'react';
 import { ScrollArea } from '../../ui/scroll-area';
 
 interface PackageModalProps {
@@ -39,17 +40,15 @@ export function RequestFundPayment({ open, onOpen, receiving_bank }: PackageModa
 
     const exchangeRateToShow = exchangeRate ?? 0; // Fallback to 0 if exchangeRate is undefined
 
-    // const handleSubmit = (e: FormEvent, bank_id: number) => {
-    //     e.preventDefault();
+    const handleSubmit = (e: FormEvent, bank_id: number) => {
+        e.preventDefault();
 
-    //     router.post('/postpackage', {
-    //         package_id: finalValues?.pck.id, // Passed as a prop
-    //         bank_id: bank_id, // From useState
-    //         payment_method: finalValues?.paymentMode, // From useState
-    //         amount: finalValues?.amount, // From useState
-    //     });
-    //     onOpen();
-    // };
+        router.post('/postrequest-fund', {
+            bank_id: bank_id, // From useState
+            amount: requestamount, // From useState
+        });
+        onOpen();
+    };
 
     function handleRequestAmount(event: React.ChangeEvent<HTMLInputElement>) {
         setrequestamount(event.target.value);
@@ -132,10 +131,10 @@ export function RequestFundPayment({ open, onOpen, receiving_bank }: PackageModa
                                                         <p>Scan this QR-code using your preferred mobile banking app.</p>
                                                     </div>
                                                     <div className="mt-8 text-center text-sm">
-                                                        {/* <Button onClick={(e) => handleSubmit(e, item.id)} className="w-24 bg-red-500">
-                                                            OK
-                                                        </Button> */}
-                                                        <Button className="w-24 bg-red-500">Request</Button>
+                                                        <Button onClick={(e) => handleSubmit(e, item.id)} className="w-24 bg-red-500">
+                                                            Request
+                                                        </Button>
+                                                        {/* <Button className="w-24 bg-red-500">Request</Button> */}
                                                     </div>
                                                 </div>
                                             </TabsContent>

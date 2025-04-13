@@ -33,7 +33,7 @@ Route::get('transfer-fund', [TransferfundController::class, 'index']);
 Route::post('posttransfer-fund', [TransferfundController::class, 'postTransferfund']);
 
 //request fund module
-Route::get('request-fund', [RequestFundController::class, 'banks']);
+Route::get('request-fund', [RequestFundController::class, 'index']);
 Route::post('postrequest-fund', [RequestFundController::class, 'postRequestfund']);
 
 
