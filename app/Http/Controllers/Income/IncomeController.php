@@ -40,7 +40,7 @@ class IncomeController extends Controller
             ->orderBy('rb.created_at', 'desc')
             ->get();
 
-        return Inertia::render('client/income-history', [
+        return Inertia::render('client/request-fund', [
             'data' => DailyInterestLog::where('user_id', $user->id)->latest('updated_at', 'desc')->get(),
             'referral_bonus' => $referralBonuses,
         ]);

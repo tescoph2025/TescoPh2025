@@ -10,10 +10,7 @@ use App\Http\Controllers\Referral\ReferralController;
 use App\Http\Controllers\Transferfund\TransferfundController;
 use App\Http\Controllers\Withdraw\WithdrawController;
 use Illuminate\Support\Facades\Route;
-
-
-
-
+use Inertia\Inertia;
 
 Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -31,6 +28,7 @@ Route::get('withdraw-history', [WithdrawController::class, 'indexHistory'])->nam
 
 //transfer fund module
 Route::get('transfer-fund', [TransferfundController::class, 'index']);
+Route::get('request-fund', [IncomeController::class, 'index']);
 Route::post('posttransfer-fund', [TransferfundController::class, 'postTransferfund']);
 
 
@@ -46,3 +44,12 @@ Route::get('franchise-application', [AppFormController::class, 'index_franchise'
 Route::get('credit-application', [AppFormController::class, 'index_credit'])->name('credit.index');
 
 Route::post('post-appForm', [AppFormController::class, 'postAppForm']);
+
+
+// Route::get('request-fund', function () {
+//     return Inertia::render('request-fund');
+// })->name('request-fund');
+
+// Route::get('client/request-fund', function () {
+//     return Inertia::render('client/request-fund');
+// })->name('client/request-fund');

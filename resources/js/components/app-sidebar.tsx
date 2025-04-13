@@ -13,6 +13,7 @@ import {
     ClockAlert,
     CreditCard,
     FileClock,
+    FileInput,
     IdCard,
     LayoutGrid,
     LucideCircleCheckBig,
@@ -89,6 +90,11 @@ const ClientmainNavItems: NavItem[] = [
         title: 'Transfer Fund',
         url: '/transfer-fund',
         icon: WalletCards,
+    },
+    {
+        title: 'Request Fund',
+        url: '/request-fund',
+        icon: FileInput,
     },
     {
         title: 'Income History',
