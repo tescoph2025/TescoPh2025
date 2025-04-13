@@ -54,6 +54,16 @@ const AdminmainNavItems: NavItem[] = [
         icon: LucideCircleCheckBig,
     },
     {
+        title: 'Pending Request-Fund',
+        url: '/admin-pending-requestfund',
+        icon: ClockAlert,
+    },
+    {
+        title: 'Approved Request-Fund',
+        url: '/admin-approved-requestfund',
+        icon: LucideCircleCheckBig,
+    },
+    {
         title: 'Manage Users',
         url: '/admin-manage-users',
         icon: BookUser,
