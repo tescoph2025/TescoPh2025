@@ -50,6 +50,7 @@ class AdminManageUsersController extends Controller
             LIMIT 1
         ) as referred_by')
             )
+            ->orderBy('a.created_at', 'desc')
             ->get();
 
         return Inertia::render('admin/admin-manage-users', [

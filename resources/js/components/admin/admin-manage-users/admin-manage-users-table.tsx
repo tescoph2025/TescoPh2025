@@ -7,7 +7,6 @@ import {
     flexRender,
     getCoreRowModel,
     getFilteredRowModel,
-    getPaginationRowModel,
     getSortedRowModel,
     SortingState,
     useReactTable,
@@ -15,7 +14,6 @@ import {
 } from '@tanstack/react-table';
 import { Check, X } from 'lucide-react';
 import React from 'react';
-import { Button } from '../../ui/button';
 import { Separator } from '../../ui/separator';
 
 export type MANAGEUSERSTYPE = {
@@ -102,7 +100,7 @@ const AdminManageUsersTable = ({ data }: { data: MANAGEUSERSTYPE[] }) => {
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
+        // getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         onColumnVisibilityChange: setColumnVisibility,
@@ -158,7 +156,7 @@ const AdminManageUsersTable = ({ data }: { data: MANAGEUSERSTYPE[] }) => {
                 </TableBody>
             </Table>
             <Separator orientation="horizontal" />
-            <div className="mx-2 flex items-center justify-end space-x-2 py-4">
+            {/* <div className="mx-2 flex items-center justify-end space-x-2 py-4">
                 <div className="text-muted-foreground flex-1 text-sm">
                     {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s) selected.
                 </div>
@@ -170,7 +168,7 @@ const AdminManageUsersTable = ({ data }: { data: MANAGEUSERSTYPE[] }) => {
                         Next
                     </Button>
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 };
