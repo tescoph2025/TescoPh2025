@@ -127,17 +127,18 @@ class AdminDepositController extends Controller
             'bonus_amount'  => $bonusRate,
         ]);
 
-        return redirect()->back()->with('success', ['message' => 'Request approved.', $time]);
+        return back()->with('success', ['message' => 'Request approved.', $time]);
     }
 
     public function denyDeposit(Request $request)
     {
         $time = now()->format('H:i:s');
 
-        $withdraw_trans = WithdrawTransaction::find($request->id);
-        $withdraw_trans->status = 'denied';
-        $withdraw_trans->save();
+        $deposit_trans = DepositPackageTransac::find($request->id);
+        // Log::info(['deposit' => $deposit_trans]);
+        $deposit_trans->status = 'declined';
+        $deposit_trans->save();
 
-        return redirect()->back()->with('success', ['message' => 'Request denied.', $time]);
+        return back()->with('success', ['message' => 'Request denied.', $time]);
     }
 }
