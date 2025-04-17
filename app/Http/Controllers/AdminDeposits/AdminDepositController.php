@@ -114,9 +114,9 @@ class AdminDepositController extends Controller
         $packageService = new PackageService();
         $packageService->deductSlot($package->id);
 
-        $accountBalance = AccountBalance::where('user_id', $deposit_trans->user_id)->first();
-        $accountBalance->balance -= $deposit_trans->amount;
-        $accountBalance->save();
+        // $accountBalance = AccountBalance::where('user_id', $deposit_trans->user_id)->first();
+        // $accountBalance->balance -= $deposit_trans->amount;
+        // $accountBalance->save();
 
         $bonusRate = $package->referal_bonus_rate * $deposit_trans->amount;
         $refUserId = ReferralList::where('user_id', $deposit_trans->user_id)->first()->ref_user_id;
