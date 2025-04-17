@@ -63,7 +63,7 @@ export function RequestFundPayment({ open, onOpen, receiving_bank }: PackageModa
 
     return (
         <Dialog open={open} onOpenChange={onOpen}>
-            <DialogContent className="h-11/12 sm:max-w-[600px]">
+            <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
                     <DialogTitle className="text-center">Request Fund</DialogTitle>
                 </DialogHeader>
@@ -82,15 +82,16 @@ export function RequestFundPayment({ open, onOpen, receiving_bank }: PackageModa
                                         </TabsList>
                                         {receiving_bank.map((item) => (
                                             <TabsContent value={String(item.id)} key={item.id}>
-                                                <div className="rounded-md py-5 text-center">
+                                                <div className="rounded-md py-5">
                                                     <Input
                                                         placeholder="Enter your desire amount"
+                                                        type="number"
                                                         value={requestamount}
                                                         onChange={handleRequestAmount}
                                                     />
-                                                    <Label>Amount</Label>
+                                                    <Label className="mt-4 ml-2">Amount</Label>
                                                 </div>
-                                                <div className="rounded-md bg-red-100 p-4 text-black">
+                                                {/* <div className="rounded-md bg-red-100 p-4 text-black">
                                                     <div className="pb-3">
                                                         <span className="text-accent-foreground text-xs">Receiving Bank: </span>
                                                         <span className="text-sm font-bold">{item.receiving_bank}</span>
@@ -141,8 +142,12 @@ export function RequestFundPayment({ open, onOpen, receiving_bank }: PackageModa
                                                         <Button onClick={(e) => handleSubmit(e, item.id)} className="w-24 bg-red-500">
                                                             Request
                                                         </Button>
-                                                        {/* <Button className="w-24 bg-red-500">Request</Button> */}
                                                     </div>
+                                                </div> */}
+                                                <div className="text-center text-sm">
+                                                    <Button onClick={(e) => handleSubmit(e, item.id)} className="w-24 bg-red-500">
+                                                        Request
+                                                    </Button>
                                                 </div>
                                             </TabsContent>
                                         ))}
