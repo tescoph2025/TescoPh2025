@@ -116,7 +116,7 @@ export function PaymentOnline({ open, finalValues, onOpen, receiving_bank }: Pac
                                                             <li>6. Enter or paste the above Account Number in account number field.</li>
                                                             <li>
                                                                 7. Once complete - confirm payment, save image and send to{' '}
-                                                                <span className="font-bold text-red-500"> tesciphilippines2025@gmail.com</span>.
+                                                                <span className="font-bold text-red-500"> tescophilippines2025@gmail.com</span>.
                                                             </li>
                                                         </ol>
                                                     </div>
