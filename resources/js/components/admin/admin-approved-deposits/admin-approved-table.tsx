@@ -1,5 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { formatDate, formattedNumber } from '@/utils/utils';
+import { router } from '@inertiajs/react';
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -16,16 +17,17 @@ import React from 'react';
 import { Button } from '../../ui/button';
 import { Separator } from '../../ui/separator';
 
-export type PENDINGDATATYPE = {
+export type APPROVEDDATATYPE = {
     id: number;
     amount: number;
     days_remaining: number;
     deposit_date: string;
     package_name: string;
     status: string;
+    bank_id: number;
 };
 
-export const columns: ColumnDef<PENDINGDATATYPE>[] = [
+export const columns: ColumnDef<APPROVEDDATATYPE>[] = [
     {
         accessorKey: 'name',
         header: 'Client Name',
@@ -53,9 +55,33 @@ export const columns: ColumnDef<PENDINGDATATYPE>[] = [
         header: 'Date Approved',
         cell: ({ row }) => <div>{formatDate(row.getValue('deposit_date'))}</div>,
     },
+    {
+        id: 'actions',
+        header: 'Actions',
+        enableHiding: false,
+        cell: ({ row }) => {
+            const item = row.original;
+
+            const handleDeny = (e: any) => {
+                e.preventDefault();
+                router.post('/post-delete-deposit', {
+                    id: item.id,
+                });
+            };
+            return (
+                <div className="flex gap-x-2">
+                    {item.bank_id ? (
+                        <Button onClick={handleDeny} size={'sm'} variant={'destructive'}>
+                            Delete
+                        </Button>
+                    ) : null}
+                </div>
+            );
+        },
+    },
 ];
 
-const ApprovedTable = ({ data }: { data: PENDINGDATATYPE[] }) => {
+const ApprovedTable = ({ data }: { data: APPROVEDDATATYPE[] }) => {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});

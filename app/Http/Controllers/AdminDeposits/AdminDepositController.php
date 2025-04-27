@@ -44,7 +44,9 @@ class AdminDepositController extends Controller
                 'deposit_package_transac.status',
                 'deposit_package_transac.amount',
                 'deposit_package_transac.payment_method',
-                'deposit_package_transac.bank_id'
+                'deposit_package_transac.bank_id',
+                'deposit_package_transac.id'
+
             )
             ->where('deposit_package_transac.status', 'approved')
             ->get();
@@ -141,4 +143,54 @@ class AdminDepositController extends Controller
 
         return back()->with('success', ['message' => 'Request denied.', $time]);
     }
+
+    public function deleteDeposit(Request $request)
+    {
+        $deposit_trans = DepositPackageTransac::find($request->id);
+    
+        if (!$deposit_trans) {
+            return back()->with('error', ['message' => 'Deposit transaction not found.']);
+        }
+    
+        // Delete related ReferralBonus
+
+        $referralBonusUser = DB::table('referral_bonus as rb')
+        ->leftJoin('deposit_package_transac as dpt', 'rb.deposit_trans_id', '=', 'dpt.id')
+        ->leftJoin('referral_list as rl', 'rl.user_id', '=', 'dpt.user_id')
+        ->leftJoin('package as p', 'p.id', '=', 'dpt.package_id')
+        ->leftJoin('users as u', 'u.id', '=', 'rl.user_id')
+        ->select(
+            'rb.created_at',
+            'rb.bonus_amount',
+            'p.package_name',
+            'rl.ref_user_username',
+            'rl.ref_user_id',
+            'rl.user_id',
+            'u.name'
+        )
+        ->where('rb.deposit_trans_id', $request->id)
+        ->orderBy('rb.created_at', 'desc')
+        ->first();
+
+        $userBalance = AccountBalance::where('user_id', $referralBonusUser->ref_user_id)->first();
+
+        if ($userBalance) {
+            // Subtract the referral bonus amount
+            $userBalance->balance -= $referralBonusUser->bonus_amount;
+
+            // Save the updated balance
+            $userBalance->save();
+          }
+
+        ReferralBonus::where('deposit_trans_id', $request->id)->delete();
+    
+        // Delete related TotalInterest
+        TotalInterest::where('deposit_trans_id', $request->id)->delete();
+    
+        // After deleting related records, delete the deposit itself
+        $deposit_trans->delete();
+    
+        return back()->with('success', ['message' => 'Deposit deleted successfully.']);
+    }
+    
 }

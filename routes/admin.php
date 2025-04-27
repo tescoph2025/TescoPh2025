@@ -23,6 +23,7 @@ Route::middleware([AdminRole::class])->group(function () {
     Route::get('admin-approved-deposits', [AdminDepositController::class, 'approvedDeposits'])->name('admin-approved-deposits');
     Route::post('post-approve-deposit', [AdminDepositController::class, 'approveDeposit']);
     Route::post('post-deny-deposit', [AdminDepositController::class, 'denyDeposit']);
+    Route::post('post-delete-deposit', [AdminDepositController::class, 'deleteDeposit']);
 
     Route::get('admin-pending-withdraw', [AdminWithdrawController::class, 'pendingWithdraw'])->name('admin-pending-withdraw');
     Route::get('admin-approved-withdraw', [AdminWithdrawController::class, 'approvedWithdraw'])->name('admin-approved-withdraw');
