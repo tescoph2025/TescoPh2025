@@ -42,6 +42,18 @@ export const columns: ColumnDef<PENDINGDATATYPE>[] = [
         cell: ({ row }) => <div>{row.getValue('payment_method') === '1' ? 'Account Balance' : 'Online Transfer'}</div>,
     },
     {
+        accessorKey: 'bank_name',
+        header: 'Bank Name',
+    },
+    {
+        accessorKey: 'bank_account_name',
+        header: 'Bank Account Name',
+    },
+    {
+        accessorKey: 'bank_account_number',
+        header: 'Bank Account No.',
+    },
+    {
         accessorKey: 'email',
         header: "Client's Email",
     },

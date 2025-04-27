@@ -37,7 +37,7 @@ class AdminWithdrawController extends Controller
 
         $data = DB::table('withdraw_transaction as a')
             ->join('users as b', 'a.user_id', '=', 'b.id')
-            ->leftJoin('user_bank_details as c', 'c.user_id', '=', 'a.id')
+            ->leftJoin('user_bank_details as c', 'c.user_id', '=', 'a.user_id')
             ->select(
                 'a.id',
                 'b.name',

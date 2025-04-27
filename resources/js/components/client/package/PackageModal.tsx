@@ -33,6 +33,8 @@ export function PackageModal({ account_balance, open, selectedPackage, onSelect,
     const [openonline, setOpenonline] = useState(false);
     const [finalValues, setFinalValues] = useState<FINALVALUES>();
 
+    console.log('selectedPackage', selectedPackage);
+
     useEffect(() => {
         console.log('open modal');
         setPkg(selectedPackage);
@@ -126,6 +128,18 @@ export function PackageModal({ account_balance, open, selectedPackage, onSelect,
                                     </Badge>
                                 </div>
                             ) : null}
+                            <div className="flex items-center pt-4">
+                                <Badge variant="secondary" className="text-sm">
+                                    <p className="mr-1 text-center font-medium">Daily Interest:</p>
+                                    {formattedNumber(amount * selectedPackage.daily_shares_rate)}
+                                </Badge>
+                            </div>
+                            <div className="flex items-center pt-4">
+                                <Badge variant="secondary" className="text-sm">
+                                    <p className="mr-1 text-center font-medium">Total RoI:</p>
+                                    {formattedNumber(amount * selectedPackage.daily_shares_rate * selectedPackage.effective_days - amount)}
+                                </Badge>
+                            </div>
                         </div>
                     </div>
                 </div>
