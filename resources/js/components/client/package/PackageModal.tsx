@@ -137,7 +137,9 @@ export function PackageModal({ account_balance, open, selectedPackage, onSelect,
                             <div className="flex items-center pt-4">
                                 <Badge variant="secondary" className="text-sm">
                                     <p className="mr-1 text-center font-medium">Total RoI:</p>
-                                    {formattedNumber(amount * selectedPackage.daily_shares_rate * selectedPackage.effective_days - amount)}
+                                    {formattedNumber(
+                                        amount * selectedPackage.daily_shares_rate * selectedPackage.effective_days + parseFloat(amount),
+                                    )}
                                 </Badge>
                             </div>
                         </div>
