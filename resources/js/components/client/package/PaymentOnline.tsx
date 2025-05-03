@@ -23,7 +23,7 @@ export function PaymentOnline({ open, finalValues, onOpen, receiving_bank }: Pac
     useEffect(() => {
         const fetchExchangeRate = async () => {
             try {
-                const response = await fetch('https://v6.exchangerate-api.com/v6/51ce13bf15b77463bfc2fe26/latest/USD');
+                const response = await fetch('https://v6.exchangerate-api.com/v6/8fd94660d77127bfdfe04f5d/latest/USD');
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
