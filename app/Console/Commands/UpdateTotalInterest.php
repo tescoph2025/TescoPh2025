@@ -30,55 +30,53 @@ class UpdateTotalInterest extends Command
     /**
      * Execute the console command.
      */
-
-    // protected $accountBalService;
-
-    // public function __construct(AccountBalanceService $accountBalService)
-    // {
-    //     parent::__construct();
-    //     $this->accountBalService = $accountBalService;
-    // }
     public function handle()
     {
-        $interests = TotalInterest::all();
+        $interests = TotalInterest::where('status', 'active')->where('days_remaining', '>', 0)->get();
         $accountBalService = new AccountBalanceService();
 
         foreach ($interests as $interest) {
-            if ($interest->status == 'active' && $interest->days_remaining > 0) {
-                $interestAdd = $interest->initial_amount * $interest->daily_rate;
-                $newInterest = $interest->total_interest_amount + $interestAdd;
+            // Calculate the interest for the day
+            $interestAdd = $interest->initial_amount * $interest->daily_rate;
+            $newInterest = $interest->total_interest_amount + $interestAdd;
 
-                // Update the total_accumulated_interest
-                $interest->update([
-                    'total_interest_amount' => $newInterest,
-                    'days_remaining' => $interest->days_remaining -= 1
-                ]);
+            // Update the total accumulated interest and days remaining
+            $interest->update([
+                'total_interest_amount' => $newInterest,
+                'days_remaining' => $interest->days_remaining - 1
+            ]);
 
-                $deposit_trans_packageID = DepositPackageTransac::where('id', $interest->deposit_trans_id)->first()->package_id;
+            // Get package name
+            $depositTrans = DepositPackageTransac::find($interest->deposit_trans_id);
+            $package = Package::find($depositTrans->package_id ?? null);
+            $packageName = $package->package_name ?? 'Unknown Package';
 
-                $packagename = Package::where('id', $deposit_trans_packageID)->first()->package_name;
+            // Log daily interest
+            DailyInterestLog::create([
+                'user_id' => $interest->user_id,
+                'deposit_trans_id' => $interest->deposit_trans_id,
+                'package_name' => $packageName,
+                'daily_shares_rate' => $interest->daily_rate,
+                'daily_shares_value' => $interestAdd,
+                'daily_shares_total' => $newInterest,
+            ]);
 
-                DailyInterestLog::create([
-                    'user_id' => $interest->user_id,
-                    'deposit_trans_id' => $interest->deposit_trans_id,
-                    'package_name' => $packagename,
-                    'daily_shares_rate' => $interest->daily_rate,
-                    'daily_shares_value' => $interestAdd,
-                    'daily_shares_total' => $newInterest,
+            // Deactivate if term is finished
+            if ($interest->days_remaining <= 0) {
+                $interest->update(['status' => 'inactive']);
+            }
 
-                ]);
-
-                // log::info('Daily Interest Log', ['dailyLog' => $dailyLog]);
-                if ($interest->days_remaining == 0) {
-                    $interest->update([
-                        'status' => 'inactive',
-                    ]);
-                }
-
-
+            // Update account balance
+            try {
                 $accountBalService->addAccountBalance($interest->user_id, $interestAdd);
+            } catch (\Exception $e) {
+                Log::error('Failed to update account balance', [
+                    'user_id' => $interest->user_id,
+                    'error' => $e->getMessage(),
+                ]);
             }
         }
+
         $this->info('Interest updated successfully!');
     }
 }
