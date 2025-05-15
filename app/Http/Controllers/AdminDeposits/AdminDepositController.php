@@ -145,52 +145,56 @@ class AdminDepositController extends Controller
     }
 
     public function deleteDeposit(Request $request)
-    {
-        $deposit_trans = DepositPackageTransac::find($request->id);
-    
-        if (!$deposit_trans) {
-            return back()->with('error', ['message' => 'Deposit transaction not found.']);
+{
+    $request->validate([
+        'id' => 'required|integer|exists:deposit_package_transac,id',
+    ]);
+
+    DB::beginTransaction();
+
+    try {
+        $depositTrans = DepositPackageTransac::find($request->id);
+
+        if (!$depositTrans) {
+            return back()->with('error', ['message' => 'Deposit not found.']);
         }
-    
-        // Delete related ReferralBonus
 
-        $referralBonusUser = DB::table('referral_bonus as rb')
-        ->leftJoin('deposit_package_transac as dpt', 'rb.deposit_trans_id', '=', 'dpt.id')
-        ->leftJoin('referral_list as rl', 'rl.user_id', '=', 'dpt.user_id')
-        ->leftJoin('package as p', 'p.id', '=', 'dpt.package_id')
-        ->leftJoin('users as u', 'u.id', '=', 'rl.user_id')
-        ->select(
-            'rb.created_at',
-            'rb.bonus_amount',
-            'p.package_name',
-            'rl.ref_user_username',
-            'rl.ref_user_id',
-            'rl.user_id',
-            'u.name'
-        )
-        ->where('rb.deposit_trans_id', $request->id)
-        ->orderBy('rb.created_at', 'desc')
-        ->first();
+        // Reverse referral bonus
+        $refBonus = ReferralBonus::where('deposit_trans_id', $request->id)->first();
 
-        $userBalance = AccountBalance::where('user_id', $referralBonusUser->ref_user_id)->first();
+        if ($refBonus) {
+            $refList = ReferralList::where('user_id', $depositTrans->user_id)->first();
 
-        if ($userBalance) {
-            // Subtract the referral bonus amount
-            $userBalance->balance -= $referralBonusUser->bonus_amount;
+            if ($refList) {
+                $referrerBalance = AccountBalance::where('user_id', $refList->ref_user_id)->first();
 
-            // Save the updated balance
-            $userBalance->save();
-          }
+                if ($referrerBalance) {
+                    $referrerBalance->balance -= $refBonus->bonus_amount;
+                    $referrerBalance->save();
+                }
+            }
 
-        ReferralBonus::where('deposit_trans_id', $request->id)->delete();
-    
-        // Delete related TotalInterest
-        TotalInterest::where('deposit_trans_id', $request->id)->delete();
-    
-        // After deleting related records, delete the deposit itself
-        $deposit_trans->delete();
-    
+            $refBonus->delete();
+        }
+
+        // Delete total interest and related interest logs
+        $totalInterest = TotalInterest::where('deposit_trans_id', $request->id)->first();
+
+        if ($totalInterest) {
+            DailyInterestLog::where('total_interest_id', $totalInterest->id)->delete();
+            $totalInterest->delete();
+        }
+
+        // Finally, delete the deposit transaction
+        $depositTrans->delete();
+
+        DB::commit();
+
         return back()->with('success', ['message' => 'Deposit deleted successfully.']);
+    } catch (\Exception $e) {
+        DB::rollBack();
+        Log::error('Deposit deletion failed', ['error' => $e->getMessage()]);
+
+        return back()->with('error', ['message' => 'An error occurred while deleting the deposit.']);
     }
-    
 }
