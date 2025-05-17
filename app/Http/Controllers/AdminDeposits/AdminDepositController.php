@@ -152,7 +152,7 @@ class AdminDepositController extends Controller
         return back()->with('error', ['message' => 'Deposit transaction not found.']);
     }
 
-    // Store package ID before deleting the transaction
+    // Store package ID before deleting the deposit
     $packageId = $deposit_trans->package_id;
 
     // Handle ReferralBonus adjustments safely
@@ -199,7 +199,7 @@ class AdminDepositController extends Controller
 
     // Increment available slots for the package
     $package = Package::find($packageId);
-    if ($package) {
+    if ($package && isset($package->slots)) {
         $package->slots = $package->slots + 1;
         $package->save();
     }
