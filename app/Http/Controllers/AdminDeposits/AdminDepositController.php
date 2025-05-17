@@ -145,32 +145,67 @@ class AdminDepositController extends Controller
     }
 
     public function deleteDeposit(Request $request)
-    {
-        $deposit_trans = DepositPackageTransac::find($request->id);
+{
+    $deposit_trans = DepositPackageTransac::find($request->id);
 
-        if (!$deposit_trans) {
-            return back()->with('error', ['message' => 'Deposit transaction not found.']);
+    if (!$deposit_trans) {
+        return back()->with('error', ['message' => 'Deposit transaction not found.']);
+    }
+
+    // Store package ID before deleting the transaction
+    $packageId = $deposit_trans->package_id;
+
+    // Handle ReferralBonus adjustments safely
+    $referralBonusUser = DB::table('referral_bonus as rb')
+        ->leftJoin('deposit_package_transac as dpt', 'rb.deposit_trans_id', '=', 'dpt.id')
+        ->leftJoin('referral_list as rl', 'rl.user_id', '=', 'dpt.user_id')
+        ->leftJoin('package as p', 'p.id', '=', 'dpt.package_id')
+        ->leftJoin('users as u', 'u.id', '=', 'rl.user_id')
+        ->select(
+            'rb.created_at',
+            'rb.bonus_amount',
+            'p.package_name',
+            'rl.ref_user_username',
+            'rl.ref_user_id',
+            'rl.user_id',
+            'u.name'
+        )
+        ->where('rb.deposit_trans_id', $request->id)
+        ->orderBy('rb.created_at', 'desc')
+        ->first();
+
+    if ($referralBonusUser && $referralBonusUser->ref_user_id) {
+        $userBalance = AccountBalance::where('user_id', $referralBonusUser->ref_user_id)->first();
+        if ($userBalance && isset($referralBonusUser->bonus_amount)) {
+            $userBalance->balance -= $referralBonusUser->bonus_amount;
+            $userBalance->save();
         }
+    }
 
-        // Delete related ReferralBonus
+    if ($referralBonusUser && $referralBonusUser->user_id) {
+        $userBalanceCurrentUser = AccountBalance::where('user_id', $referralBonusUser->user_id)->first();
+        $totanInterestCurrentUser = TotalInterest::where('deposit_trans_id', $request->id)->first();
+        if ($userBalanceCurrentUser && $totanInterestCurrentUser && isset($totanInterestCurrentUser->total_interest_amount)) {
+            $userBalanceCurrentUser->balance -= $totanInterestCurrentUser->total_interest_amount;
+            $userBalanceCurrentUser->save();
+        }
+    }
 
-        $referralBonusUser = DB::table('referral_bonus as rb')
-            ->leftJoin('deposit_package_transac as dpt', 'rb.deposit_trans_id', '=', 'dpt.id')
-            ->leftJoin('referral_list as rl', 'rl.user_id', '=', 'dpt.user_id')
-            ->leftJoin('package as p', 'p.id', '=', 'dpt.package_id')
-            ->leftJoin('users as u', 'u.id', '=', 'rl.user_id')
-            ->select(
-                'rb.created_at',
-                'rb.bonus_amount',
-                'p.package_name',
-                'rl.ref_user_username',
-                'rl.ref_user_id',
-                'rl.user_id',
-                'u.name'
-            )
-            ->where('rb.deposit_trans_id', $request->id)
-            ->orderBy('rb.created_at', 'desc')
-            ->first();
+    ReferralBonus::where('deposit_trans_id', $request->id)->delete();
+    TotalInterest::where('deposit_trans_id', $request->id)->delete();
+
+    // Delete the deposit transaction
+    $deposit_trans->delete();
+
+    // Increment available slots for the package
+    $package = Package::find($packageId);
+    if ($package) {
+        $package->slots = $package->slots + 1;
+        $package->save();
+    }
+
+    return back()->with('success', ['message' => 'Deposit deleted successfully. Available slots updated.']);
+}
 
         $userBalance = AccountBalance::where('user_id', $referralBonusUser->ref_user_id)->first();
 
