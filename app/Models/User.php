@@ -56,8 +56,3 @@ class User extends Authenticatable
         $this->notify(new CustomResetPassword($token));
     }
 }
-
-public function isAdmin(): bool
-{
-    return $this->role === 'admin';
-}
