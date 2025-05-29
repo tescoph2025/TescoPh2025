@@ -6,10 +6,11 @@ use App\Http\Controllers\AdminManageUsers\AdminManageUsersController;
 use App\Http\Controllers\AdminRequestFund\AdminRequestFundController;
 use App\Http\Controllers\AdminTransferFunds\AdminTransferFundsController;
 use App\Http\Controllers\AdminWithdraw\AdminWithdrawController;
+use App\Http\Controllers\PackageSlotController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Middleware\AdminRole;
-//test2
+
 Route::middleware([AdminRole::class])->group(function () {
     Route::get('admin-dashboard', function () {
         return Inertia::render('admin/admin-dashboard');
@@ -36,20 +37,11 @@ Route::middleware([AdminRole::class])->group(function () {
     Route::post('post-deny-requestfund', [AdminRequestFundController::class, 'denyReqFund']);
 
     Route::get('admin-manage-users', [AdminManageUsersController::class, 'allUsers'])->name('admin-manage-users');
-    // Route::get('admin-dashboard', [AdminManageUsersController::class, 'allUsers'])->name('admin-dashboard');
+    Route::get('getmanageusers', [AdminManageUsersController::class, 'allUsers']);
+
     Route::get('admin-transfer-funds', [AdminTransferFundsController::class, 'index'])->name('admin-transfer-funds');
     Route::get('admin-activation-fund', [ActivationfundController::class, 'index'])->name('admin/admin-activation-fund');
 
-    // Route::get('admin-manage-users', function () {
-    //     return Inertia::render('admin/admin-manage-users');
-    // })->name('admin-manage-users');
-
-
-    Route::get('getmanageusers', [AdminManageUsersController::class, 'allUsers']);
-
-
-    // Route::get('admin-pending-withdraw', function () {
-    //     return Inertia::render('admin/admin-pending-withdraw');
-    // })->name('admin-pending-withdraw');
-
+    // ✅ NEW: Slot Update Route for Packages
+    Route::post('admin-package-update-slots', [PackageSlotController::class, 'update'])->name('admin.package.update-slots');
 });
